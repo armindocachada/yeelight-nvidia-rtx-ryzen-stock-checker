@@ -1,0 +1,9 @@
+version: "3.7"
+services:
+  yeelight-stock-checker:
+     container_name: yeelight-stock-checker
+     build:
+        context: .
+        dockerfile: Dockerfile
+     network_mode: host
+     restart: always
