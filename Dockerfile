@@ -1,10 +1,11 @@
-FROM python:3.9-rc-slim-buster
+FROM python:3.8-rc-slim-buster
 
 RUN TZ=Europe/London && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN apt-get -y update && apt-get -y install cron
 RUN pip3 install yeelight
 RUN pip3 install requests
 RUN pip3 install bs4
+RUN apt-get -y install python3-pandas
 RUN pip3 install pandas
 COPY files/* /home/
 

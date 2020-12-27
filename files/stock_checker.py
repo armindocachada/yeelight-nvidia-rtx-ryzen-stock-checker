@@ -8,27 +8,30 @@ from yeelight import *
 from yeelight import discover_bulbs, Bulb
 from yeelight import Flow, transitions
 from yeelight.flow import Action
-
+from multiprocessing import Process
 import pandas as pd
 import time
 import requests
+import sys
 
 def setupStockAvailableFlow(bulbIp, durationFlowSeconds=60):
   try:
     bulb = Bulb(bulbIp)
 
     durationPulseInMs=200
-    count = (durationFlowSeconds * 1000) / duration
-    transitions = yeelight.transitions.pulse(0, 255, 0, durationPulseInMs, 100)
+    count = (durationFlowSeconds * 1000) / durationPulseInMs
+    transitionsP = yeelight.transitions.pulse(0, 255, 0, durationPulseInMs, 100)
     flow = Flow(
         count=count,
         action=Action.recover,
-        transitions=transitions
+        transitions=transitionsP
     )
     bulb.turn_on()
     bulb.start_flow(flow)
-  except:
-   print("Error setting flow in bulb",file=sys.stderr)
+# except:
+#   print("Error setting flow in bulb",file=sys.stderr)
+  except Exception as ex:
+    logging.exception("Something awful happened!")
 
 # starts thread
 def startStockAvailableAlert():
@@ -36,7 +39,8 @@ def startStockAvailableAlert():
     for b in bulbs:
        print("starting {}".format(b['ip']))
        bulbIp = b['ip']
-       p = Process(target=setupStockAvailableFlow, args=(bulbIp))
+       print(f"bulbIp:{bulbIp}")
+       p = Process(target=setupStockAvailableFlow, args=(bulbIp,))
        p.start()
        p.join()
 
@@ -72,7 +76,6 @@ def checkForStock(page):
     return df
 
 
-from multiprocessing import Process
 
 if __name__ == '__main__':
     print("Main line start")
