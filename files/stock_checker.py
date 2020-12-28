@@ -44,7 +44,6 @@ def startStockAvailableAlert():
        p.start()
        p.join()
 
-
 def checkForStock(page):
     # soup = BeautifulSoup(wd.page_source)
     soup = BeautifulSoup(page.content,features="html.parser")
@@ -68,7 +67,7 @@ def checkForStock(page):
 
         if row_processed:
             items_processed.append(row_processed)
-    # cells[3].find("img")["src"]
+    # cells[3].find("img"valid)["src"]
     # columns = ["ImageUrl","Origin"]
 
     df = pd.DataFrame.from_records(items_processed, columns=["Item Title", "Status"])
